@@ -12,8 +12,8 @@ builder.Services.AddSwaggerGen();
 
 //È«¾Ö¹ýÂËÆ÷
 builder.Services.Configure<MvcOptions>(option => {
-    //option.Filters.Add(new ActionFilter());
     option.Filters.Add<ExceptionFilter>();
+    option.Filters.Add(new ActionFilter());
 
 });
 

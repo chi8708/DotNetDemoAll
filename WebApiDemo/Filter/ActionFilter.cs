@@ -7,7 +7,7 @@ namespace WebApiDemo.Filter
         public Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             int a = 1;
-            return Task.CompletedTask;
+            return next();
         }
     }
 }
