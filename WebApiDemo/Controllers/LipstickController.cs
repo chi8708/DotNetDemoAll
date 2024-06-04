@@ -41,7 +41,7 @@ namespace LipstickApp.Controllers
         [HttpGet]
         public async Task<string> Test() 
         {
-            var filePath = Path.Combine(AppContext.BaseDirectory, "assets\\img\\face.jpg");
+            var filePath = Path.Combine(AppContext.BaseDirectory, "assets\\img\\face2.jpg");
             var resultImagePath = ApplyLipstickColor(filePath, "CC6284");
 
             return resultImagePath;
@@ -82,31 +82,37 @@ namespace LipstickApp.Controllers
                     if (landmarks.TryGetValue(FacePart.TopLip, out var topLip) && landmarks.TryGetValue(FacePart.BottomLip, out var bottomLip))
                     {
                         var lipPoints = topLip.Concat(bottomLip).Select(point => new SixLabors.ImageSharp.PointF(point.Point.X, point.Point.Y)).ToArray();
-                        //img.Mutate(ctx => ctx.FillPolygon(color, lipPoints)); //直接填充很僵硬
+                        img.Mutate(ctx => {
+                            //直接填充很僵硬
+                            ctx.FillPolygon(color, lipPoints);
+                            // 边缘平滑
+                             ctx.GaussianBlur(1f);
+
+                        }); 
 
                         // 创建一个渐变填充笔刷
-                        var centerPoint = new SixLabors.ImageSharp.PointF(
-                            lipPoints.Average(p => p.X),
-                            lipPoints.Average(p => p.Y)
-                        );
+                        //var centerPoint = new SixLabors.ImageSharp.PointF(
+                        //    lipPoints.Average(p => p.X),
+                        //    lipPoints.Average(p => p.Y)
+                        //);
 
-                        var brush = new RadialGradientBrush(centerPoint, 50, GradientRepetitionMode.None, new ColorStop(0, color), new ColorStop(1, Color.Transparent));
+                        //var brush = new RadialGradientBrush(centerPoint, 50, GradientRepetitionMode.None, new ColorStop(0, color), new ColorStop(1, Color.Transparent));
 
-                            img.Mutate(ctx =>
-                            {
-                            // 应用渐变填充
-                            ctx.FillPolygon(brush, lipPoints);
+                        //    img.Mutate(ctx =>
+                        //    {
+                        //    // 应用渐变填充
+                        //    ctx.FillPolygon(brush, lipPoints);
 
 
-                            // 混合模式
-                            ctx.FillPolygon(new DrawingOptions { GraphicsOptions = new GraphicsOptions { ColorBlendingMode = PixelColorBlendingMode.Overlay } }, color, lipPoints);
+                        //    // 混合模式
+                        //    ctx.FillPolygon(new DrawingOptions { GraphicsOptions = new GraphicsOptions { ColorBlendingMode = PixelColorBlendingMode.Overlay } }, color, lipPoints);
 
-                            // 混合模式
-                            //ctx.DrawPolygon(new DrawingOptions { GraphicsOptions = new GraphicsOptions { BlendPercentage = 0.5f, ColorBlendingMode = PixelColorBlendingMode.Overlay } }, color,1, lipPoints);
+                        //    // 混合模式
+                        //    //ctx.DrawPolygon(new DrawingOptions { GraphicsOptions = new GraphicsOptions { BlendPercentage = 0.5f, ColorBlendingMode = PixelColorBlendingMode.Overlay } }, color,1, lipPoints);
 
-                            // 边缘平滑
-                            ctx.GaussianBlur(1f);
-                            });
+                        //    // 边缘平滑
+                        //    ctx.GaussianBlur(1f);
+                        //    });
                     }
                 }
 
