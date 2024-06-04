@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -7,7 +7,30 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="C:\Users\Administrator\.nuget\packages\facerecognitiondotnet\1.3.0.7\build\..\runtimes\win-AnyCPU\native\DlibDotNetNativeDnnAgeClassification.dll" />
+    <Content Remove="C:\Users\Administrator\.nuget\packages\facerecognitiondotnet\1.3.0.7\build\..\runtimes\win-AnyCPU\native\DlibDotNetNativeDnnGenderClassification.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FaceRecognitionDotNet" Version="1.3.0.7" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.4" />
+    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="assets\img\face.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="data\haarcascade_frontalface_default.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="data\haarcascade_mcs_mouth.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="haarcascade_frontalface_default.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
