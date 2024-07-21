@@ -17,3 +17,4 @@
 
 ## WebApiDemo 
 1. LipstickController：FaceRecognitionDotNet人脸识别嘴唇
+<img src="https://github.com/chi8708/DotNetDemoAll/blob/master/lipStick.jpg" style="width:260px;" />
