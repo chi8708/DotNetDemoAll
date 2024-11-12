@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
+using WindowsFormsApp1;
 
 namespace InvoiceDemo
 {
@@ -31,7 +34,7 @@ namespace InvoiceDemo
                     //宋体
                     float baseunit = 2.83464566929f;//长度单位基数
                     BaseFont basefont = BaseFont.CreateFont("C:\\Windows\\Fonts\\simsun.ttc,1", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
-                    Font font = new Font(basefont, 9);
+                    iTextSharp.text.Font font = new iTextSharp.text.Font(basefont, 9);
                     //创建表格
                     PdfPTable table = new PdfPTable(8);
                     table.HorizontalAlignment = Element.ALIGN_LEFT;
@@ -104,10 +107,50 @@ namespace InvoiceDemo
                 //table.WriteSelectedRows(0, -1, x, y, stamper.GetUnderContent(1)); 
                 #endregion
 
+                // 在指定位置插入二维码（左上角 20mm x 20mm 位置）
+                var qrImage = GetQRcode();
+                iTextSharp.text.Image qrCodeImage = iTextSharp.text.Image.GetInstance(qrImage, ImageFormat.Png);
+                qrCodeImage.SetAbsolutePosition(12.5f, 318f); // 设置位置 (X, Y)
+               // qrCodeImage.ScaleToFit(56.7f, 56.7f); // 将二维码缩放到 20mm x 20mm (1mm ≈ 2.835pt)
+                qrCodeImage.ScaleToFit(67.88f, 67.88f); // 将二维码缩放到 20mm x 20mm (1mm ≈ 2.835pt)
+                PdfContentByte pdfContentByte = stamper.GetOverContent(1);
+                pdfContentByte.AddImage(qrCodeImage);
 
-                 stamper.Close();
+                stamper.Close();
                 
             }
+        }
+
+        private Bitmap GetQRcode() 
+        {
+
+            //// 设置二维码内容的字段
+            string version = "01";
+            string invoiceType = "32";
+            string invoiceCode = ""; // 可以为空
+            string invoiceNumber = "24532000000093727413";
+            string totalAmount = "94.50";
+            string issueDate = "20241023";
+            string checkCode = ""; // 可以为空
+
+            //// 拼接内容，CRC 校验值稍后生成
+            string qrContent = $"{version},{invoiceType},{invoiceCode},{invoiceNumber},{totalAmount},{issueDate},{checkCode}";
+
+            // 计算 CRC 校验码
+            string crc = QRCodeHelper.CalculateCRC16Minim(qrContent);
+            qrContent += $",{crc}";
+
+            //// 生成二维码并添加浅黄色的“税”字
+            //QRCodeHelper.GenerateQRCodeWithText(qrContent, "税");
+            //Console.WriteLine("二维码生成成功！");
+
+            // 生成二维码并添加“税”字
+            Bitmap qrImage = QRCodeHelper.GenerateQRCodeWithText(qrContent, "税");
+
+            return qrImage;
+            // 将二维码调整为 20mm x 20mm 缩小后模糊，在pdf中缩小到20mm x 20mm
+            //Bitmap resizedQrImage = QRCodeHelper.ResizeImage(qrImage, 20, 20);
+            //return resizedQrImage;
         }
     }
     public class detailmodel

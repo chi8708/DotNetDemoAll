@@ -15,6 +15,7 @@ using static iTextSharp.text.pdf.codec.TiffWriter;
 
 using System.Reflection;
 using System.Web;
+using System.Drawing;
 
 
 namespace WindowsFormsApp1
@@ -31,8 +32,6 @@ namespace WindowsFormsApp1
         private void button1_Click(object sender, EventArgs e)
         {
 
-
-            Document document = new Document(pageSize: new Rectangle(0,0,210,140), marginLeft: 7, marginRight: 7, marginBottom: 7, marginTop: 7);
 
 
             //模板使用Adobe Acrobat制作，工具→准备表单→文本域
@@ -69,7 +68,7 @@ namespace WindowsFormsApp1
             };
             new PdfHelper().FillForm(filename, outfilename, new Dictionary<string, string>() { 
                 {"buyercode","xxxxxx111" },
-                { "buyername","测试测试测测试测试测测试测试测测试测试测测试测试测测试测试测测试测试测测试测试测111"},
+                { "buyername","测试测试测测试测试"},
                 //{"sallercode","weriweuriwu111"},
                 //{"sallername","测试测试测试测试测试测试测试"},
                 { "invoiceno","123456789012345678901"},
@@ -80,6 +79,33 @@ namespace WindowsFormsApp1
 
         }
 
+        private void button2_Click(object sender, EventArgs e)
+        {
+            //// 设置二维码内容的字段
+            string version = "01";
+            string invoiceType = "32";
+            string invoiceCode = ""; // 可以为空
+            string invoiceNumber = "24532000000093727413";
+            string totalAmount = "94.50";
+            string issueDate = "20241023";
+            string checkCode = ""; // 可以为空
 
+            //// 拼接内容，CRC 校验值稍后生成
+            string qrContent = $"{version},{invoiceType},{invoiceCode},{invoiceNumber},{totalAmount},{issueDate},{checkCode}";
+
+            // 计算 CRC 校验码
+            string crc = QRCodeHelper.CalculateCRC16Minim(qrContent);
+            qrContent += $",{crc}";
+
+            //// 生成二维码并添加浅黄色的“税”字
+            //QRCodeHelper.GenerateQRCodeWithText(qrContent, "税");
+            //Console.WriteLine("二维码生成成功！");
+
+            // 生成二维码并添加“税”字
+            Bitmap qrImage = QRCodeHelper.GenerateQRCodeWithText(qrContent, "税");
+
+            // 将二维码调整为 20mm x 20mm
+            Bitmap resizedQrImage = QRCodeHelper.ResizeImage(qrImage, 20, 20);
+        }
     }
 }
