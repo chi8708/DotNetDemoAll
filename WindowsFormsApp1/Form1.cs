@@ -35,7 +35,7 @@ namespace WindowsFormsApp1
 
 
             //模板使用Adobe Acrobat制作，工具→准备表单→文本域
-            string filename = "E:\\项目资料\\电子发票-乐企\\开发\\invoiceTemplate.pdf";
+            string filename = "E:\\Study\\DotNet\\DotNetDemoAll\\WindowsFormsApp1\\invoiceTemplate.pdf";
              string outfilename = @"E:\项目资料\电子发票-乐企\开发\invoiceTemplate1.pdf";
            string imgsrc = "C:\\Users\\Administrator\\Desktop\\Assets\\TestPic.jpg";
             // 初始化PdfReader
