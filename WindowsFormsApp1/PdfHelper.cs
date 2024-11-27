@@ -116,11 +116,11 @@ namespace InvoiceDemo
                 PdfContentByte pdfContentByte = stamper.GetOverContent(1);
                 pdfContentByte.AddImage(qrCodeImage);
 
-                // 设置压缩级别
-                stamper.Writer.SetFullCompression();
-                stamper.Writer.CompressionLevel = PdfStream.BEST_COMPRESSION; // 设置最佳压缩级别
-                // 如果 PDF 包含表单，将其平面化以减少大小
-                stamper.FormFlattening = true;
+                // 设置压缩级别 不能压缩压缩后部分表单字段会消失
+                //stamper.Writer.SetFullCompression();
+                //stamper.Writer.CompressionLevel = PdfStream.BEST_COMPRESSION; // 设置最佳压缩级别
+                //// 如果 PDF 包含表单，将其平面化以减少大小
+                //stamper.FormFlattening = true;
                 stamper.Close();
                 
             }
