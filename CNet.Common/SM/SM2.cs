@@ -108,9 +108,9 @@ namespace Com.Mlq.SM
             sm3.BlockUpdate(p, 0, p.Length);
 
             // x,y
-            p = userKey.X.ToBigInteger().ToByteArray();
+            p = userKey.XCoord.ToBigInteger().ToByteArray();
             sm3.BlockUpdate(p, 0, p.Length);
-            p = userKey.Y.ToBigInteger().ToByteArray();
+            p = userKey.YCoord.ToBigInteger().ToByteArray();
             sm3.BlockUpdate(p, 0, p.Length);
 
             // Z

@@ -40,12 +40,12 @@ namespace Com.Mlq.SM
             byte[] p;
 
 
-            p = p2.X.ToBigInteger().ToByteArray();
+            p = p2.XCoord.ToBigInteger().ToByteArray();
             sm3keybase.BlockUpdate(p, 0, p.Length);
             sm3c3.BlockUpdate(p, 0, p.Length);
 
 
-            p = p2.Y.ToBigInteger().ToByteArray();
+            p = p2.YCoord.ToBigInteger().ToByteArray();
             sm3keybase.BlockUpdate(p, 0, p.Length);
 
 
@@ -125,7 +125,7 @@ namespace Com.Mlq.SM
 
         public virtual void Dofinal(byte[] c3)
         {
-            byte[] p = p2.Y.ToBigInteger().ToByteArray();
+            byte[] p = p2.YCoord.ToBigInteger().ToByteArray();
             sm3c3.BlockUpdate(p, 0, p.Length);
             sm3c3.DoFinal(c3, 0);
             Reset();
