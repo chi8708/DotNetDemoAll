@@ -16,6 +16,7 @@ using static iTextSharp.text.pdf.codec.TiffWriter;
 using System.Reflection;
 using System.Web;
 using System.Drawing;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 
 namespace WindowsFormsApp1
@@ -66,6 +67,12 @@ namespace WindowsFormsApp1
             new detailmodel() { Name= "上了对方极乐世界",Model= "收到了放", Num="10", Price="100.00", Total="1000.00", TaxAmount="170.00", TaxRate="17%", Unit="x" },
             new detailmodel() { Name= "sfjsdljflsdfjksldfjslkfjslfjkslfj",Model= "2394820938402" }
             };
+            var remark = "";
+
+             remark += "购方开户银行:测试银行; ";
+             remark += "银行账号:12345645645645456456;\r\n";
+             remark += string.Format("被红冲蓝字数电票号码：{0} 红字发票信息确认单编号：{1};\r\n", "12345678901234567890", "123123123123123123");
+
             new PdfHelper().FillForm(filename, outfilename, new Dictionary<string, string>() { 
                 {"buyercode","xxxxxx111" },
                 { "buyername","测试测试测测试测试"},
@@ -73,7 +80,14 @@ namespace WindowsFormsApp1
                 //{"sallername","测试测试测试测试测试测试测试"},
                 { "invoiceno","123456789012345678901"},
                 { "invoicedate",DateTime.Now.ToString("yyyy年MM月dd日")},
-                { "totalPrize",detail.Sum(p=>string.IsNullOrWhiteSpace(p.Total)?0m:Convert.ToDecimal(p.Total)).ToString("0.00")}
+                { "totalPrice",detail.Sum(p=>string.IsNullOrWhiteSpace(p.Total)?0m:Convert.ToDecimal(p.Total)).ToString("0.00")},
+                { "totalTax","¥"+1700.ToString("0.00")},
+                 { "totalPriceTaxtDX",MoneyToChinese.ConvertToChinese(Convert.ToDecimal(17000.ToString("0.00")))},
+                 { "totalPriceTaxt",170000.ToString("0.00")},
+                 { "Remark",remark},
+                 { "bwPayee","张小三"},
+                 { "bwChecker","李小二"},
+                 { "bwInvoiceDrawer","王五"}
             }, detail);
 
 
