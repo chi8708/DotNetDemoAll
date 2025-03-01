@@ -61,6 +61,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddressParser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddressParser.Designer.cs">
+      <DependentUpon>AddressParser.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -75,6 +81,9 @@
     <Compile Include="SM4\SM4.cs" />
     <Compile Include="SM4\SM4Util.cs" />
     <Compile Include="SM4\SM4_Context.cs" />
+    <EmbeddedResource Include="AddressParser.resx">
+      <DependentUpon>AddressParser.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
