@@ -34,7 +34,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="itextsharp, Version=5.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\..\Study\DotNet\DotNetDemoAll\packages\iTextSharp.5.2.0\lib\itextsharp.dll</HintPath>
+      <HintPath>..\packages\iTextSharp.5.2.0\lib\itextsharp.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="PdfSharp, Version=1.50.5147.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
       <HintPath>..\packages\PDFsharp.1.50.5147\lib\net20\PdfSharp.dll</HintPath>
