@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
 namespace CNet.Common
@@ -28,6 +29,21 @@ namespace CNet.Common
             long lTime = long.Parse(timeStamp + "0000000");
             TimeSpan toNow = new TimeSpan(lTime);
             return dtStart.Add(toNow);
+        }
+
+        /// <summary>
+        /// 对象转换为字典
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static Dictionary<string, string> ObjectToDictionary(object obj)
+        {
+            var dictionary = new Dictionary<string, string>();
+            foreach (PropertyInfo property in obj.GetType().GetProperties())
+            {
+                dictionary[property.Name] = property.GetValue(obj).ToString();
+            }
+            return dictionary;
         }
     }
 }

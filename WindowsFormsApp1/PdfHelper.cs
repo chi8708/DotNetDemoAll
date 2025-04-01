@@ -69,6 +69,14 @@ namespace InvoiceDemo
                             {
                                 paragraph.Font.Size = 12f;
                             }
+                            else if (field.Key == "totalTax")
+                            {
+                                paragraph.Alignment = Element.ALIGN_RIGHT;  // 右对齐
+                            }
+                            else if (field.Key == "Remark")
+                            {
+                                paragraph.Leading = 9;  // 固定行高
+                            }
                             ct.AddElement(paragraph);
                             ct.Go(); // 绘制内容
                             paragraph.Font.Size = 9f;
