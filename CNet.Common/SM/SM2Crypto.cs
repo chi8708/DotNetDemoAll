@@ -10,6 +10,7 @@ using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Digests;
 using Org.BouncyCastle.Math.EC;
 using Org.BouncyCastle.Utilities.Encoders;
+using SM3Digest = Org.BouncyCastle.Crypto.Digests.SM3Digest;
 namespace CNet.Common
 {
    public class SM2Crypto
@@ -109,7 +110,7 @@ namespace CNet.Common
 
             var enData= new SM2Crypto().Encrypt(Hex.Decode(pubk), sourceData);
 
-            return Encoding.Default.GetString(enData);
+            return Encoding.Default.GetString(Hex.Encode(enData));
         }
 
 
@@ -124,6 +125,44 @@ namespace CNet.Common
             string plainText = Encoding.Default.GetString(new SM2Crypto().Decrypt(Hex.Decode(prik), Hex.Decode(data)));
 
             return plainText;
+        }
+
+
+        [STAThread]
+        public static void Main()
+        {
+            var sM2Crypto = new SM2Crypto();
+
+            // 生成密钥对
+            var genKey = sM2Crypto.GenerateKeyPair();
+            var prik = Encoding.Default.GetString(Hex.Encode(genKey.Item2));
+            var pubk = Encoding.Default.GetString(Hex.Encode(genKey.Item1));
+
+            Console.WriteLine("生成的私钥: " + prik);
+            Console.WriteLine("生成的公钥: " + pubk);
+
+            // 待加密的明文
+            String plainText = "ererfeiisgod";
+            byte[] sourceData = Encoding.Default.GetBytes(plainText);
+
+            // 加密
+            Console.WriteLine("加密: ");
+            byte[] encryptedData = sM2Crypto.Encrypt(Hex.Decode(pubk), sourceData);
+            String cipherText = Encoding.Default.GetString(Hex.Encode(encryptedData));
+            Console.WriteLine(cipherText);
+
+            // 解密
+            Console.WriteLine("解密: ");
+            byte[] decryptedData = sM2Crypto.Decrypt(Hex.Decode(prik), Hex.Decode(cipherText));
+            plainText = Encoding.Default.GetString(decryptedData);
+            Console.WriteLine(plainText);
+
+
+            // 使用SM2Crypto加密处理
+            var encryptedData2 = SM2Crypto.Encrypt(pubk, plainText);
+            var decryptedData2 = SM2Crypto.Decrypt(prik, encryptedData2);
+
+            Console.ReadLine();
         }
 
 
