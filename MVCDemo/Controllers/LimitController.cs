@@ -34,7 +34,7 @@ namespace MVCDemo.Controllers
         }
 
 
-        // 静态令牌桶，每秒生成2个令牌，最多存储10个令牌。// 第1秒：最多10个请求 。之后每秒：最多2个请求
+        // 静态令牌桶（推荐），每秒生成2个令牌，最多存储10个令牌。// 第1秒：最多10个请求 。之后每秒：最多2个请求
         private static readonly TokenBucket _tokenBucket = new TokenBucket(10, 2.0);
 
         //令牌桶算法：以固定速率生成令牌，请求需要获取令牌才能处理。
