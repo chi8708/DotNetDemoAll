@@ -1,4 +1,5 @@
-﻿using Com.Mlq.SM;
+﻿using CNet.Common;
+using Com.Mlq.SM;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Math;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Com.Mlq.SM
 {
-    class SM2Utils
+    public class SM2Utils
     {
         public static void GenerateKeyPair()
         {
@@ -59,6 +60,12 @@ namespace Com.Mlq.SM
             return (sc1 + sc2 + sc3).ToUpper();
         }
 
+        /// <summary>
+        /// 这个解密方法有BUG
+        /// </summary>
+        /// <param name="privateKey"></param>
+        /// <param name="encryptedData"></param>
+        /// <returns></returns>
         public static byte[] Decrypt(byte[] privateKey, byte[] encryptedData)
         {
             if (null == privateKey || privateKey.Length == 0)
@@ -69,7 +76,7 @@ namespace Com.Mlq.SM
             {
                 return null;
             }
-
+           
             String data = Encoding.Default.GetString(Hex.Encode(encryptedData));
 
             byte[] c1Bytes = Hex.Decode(Encoding.Default.GetBytes(data.Substring(0, 130)));
@@ -111,6 +118,36 @@ namespace Com.Mlq.SM
             System.Console.Out.WriteLine(plainText);
 
             Console.ReadLine();
+        }
+
+
+        /// <summary>
+        /// SM2加密
+        /// </summary>
+        /// <param name="pubk"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static String Encrypt(string pubk, string data)
+        {
+            byte[] sourceData = Encoding.Default.GetBytes(data);
+
+            var enData = SM2Utils.Encrypt(Hex.Decode(pubk), sourceData);
+
+            return enData;
+        }
+
+
+        /// <summary>
+        /// SM2解密 JAVA加密出来的数据无法解密，使用SM2Crypto 处理;
+        /// </summary>
+        /// <param name="prik"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static String Decrypt(string prik, string data)
+        {
+            string plainText = Encoding.Default.GetString(SM2Utils.Decrypt(Hex.Decode(prik), Hex.Decode(data)));
+
+            return plainText;
         }
     }
 }

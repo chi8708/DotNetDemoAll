@@ -33,9 +33,10 @@
             // 
             // btnParse
             // 
-            this.btnParse.Location = new System.Drawing.Point(48, 46);
+            this.btnParse.Location = new System.Drawing.Point(36, 37);
+            this.btnParse.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnParse.Name = "btnParse";
-            this.btnParse.Size = new System.Drawing.Size(104, 31);
+            this.btnParse.Size = new System.Drawing.Size(78, 25);
             this.btnParse.TabIndex = 0;
             this.btnParse.Text = "提取小区";
             this.btnParse.UseVisualStyleBackColor = true;
@@ -43,10 +44,11 @@
             // 
             // AddressParser
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(600, 360);
             this.Controls.Add(this.btnParse);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "AddressParser";
             this.Text = "AddressParser";
             this.ResumeLayout(false);
