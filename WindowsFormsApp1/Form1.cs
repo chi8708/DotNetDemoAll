@@ -34,6 +34,25 @@ namespace WindowsFormsApp1
         {
 
 
+            //===不含税计算方式===
+
+            //1、税额 = 金额（不含）*税率
+
+            //2、合计金额 = 金额（不含）
+
+            //3、价税合计 = 金额+税额
+
+
+
+
+            //===含税计算方式===
+
+            //1、税额 = 金额（不含）*税率 = 金额（含）* 税率/（1+税率）= 合计税额
+
+            //2、合计金额 = 金额（含）/（1+税率）
+
+            //3、价税合计 = 金额（含）
+
 
             //模板使用Adobe Acrobat制作，工具→准备表单→文本域
             string filename = "E:\\Study\\DotNet\\DotNetDemoAll\\WindowsFormsApp1\\invoiceTemplate.pdf";

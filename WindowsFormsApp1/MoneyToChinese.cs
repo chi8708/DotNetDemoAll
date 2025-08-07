@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace WindowsFormsApp1
 {
@@ -13,7 +14,7 @@ namespace WindowsFormsApp1
         {
             var orgAmount = amount;
             StringBuilder result = new StringBuilder();
-            if (amount<0)
+            if (amount < 0)
             {
                 amount = -amount;
             }
@@ -55,7 +56,7 @@ namespace WindowsFormsApp1
             }
 
 
-            if (fractionPart!=0)
+            if (fractionPart != 0)
             {
                 int jiao = fractionPart / 10;
                 int fen = fractionPart % 10;
@@ -77,11 +78,11 @@ namespace WindowsFormsApp1
                 result.Append("整");
             }
 
-            if (orgAmount<0)
+            if (orgAmount < 0)
             {
                 result.Insert(0, "（负数）");
             }
-            return result.ToString();
+            return result.Replace("零圆整", "圆整").Replace("零万圆整", "万圆整").ToString();
         }
 
         private static string SectionToChinese(int section)
@@ -113,6 +114,89 @@ namespace WindowsFormsApp1
 
             return sectionResult.ToString();
         }
+
+
+        #region 方法2 人民币小写金额转大写金额 推荐
+        /// <summary>
+        /// 小写金额转大写金额
+        /// </summary>
+        /// <param name="Money">接收需要转换的小写金额</param>
+        /// <returns>返回大写金额</returns>
+        public static string ConvertMoney(Decimal Money)
+        {
+            //金额转换程序
+            string MoneyNum = "";//记录小写金额字符串[输入参数]
+            string MoneyStr = "";//记录大写金额字符串[输出参数]
+            string BNumStr = "零壹贰叁肆伍陆柒捌玖";//模
+            string UnitStr = "万仟佰拾亿仟佰拾万仟佰拾圆角分厘毫";//模
+            bool minus = Money < 0;
+            if (minus) Money = Math.Abs(Money);
+            MoneyNum = ((long)(Money * 10000)).ToString();
+            for (int i = 0; i < MoneyNum.Length; i++)
+            {
+                string DVar = "";//记录生成的单个字符(大写)
+                string UnitVar = "";//记录截取的单位
+                for (int n = 0; n < 10; n++)
+                {
+                    //对比后生成单个字符(大写)
+                    if (Convert.ToInt32(MoneyNum.Substring(i, 1)) == n)
+                    {
+                        DVar = BNumStr.Substring(n, 1);//取出单个大写字符
+                        //给生成的单个大写字符加单位
+                        UnitVar = UnitStr.Substring(17 - (MoneyNum.Length)).Substring(i, 1);
+                        n = 10;//退出循环
+                    }
+                }
+                //生成大写金额字符串
+                MoneyStr = MoneyStr + DVar + UnitVar;
+            }
+            //二次处理大写金额字符串
+            MoneyStr = MoneyStr + "整";
+            while (MoneyStr.Contains("零分") || MoneyStr.Contains("零角") || MoneyStr.Contains("零佰") || MoneyStr.Contains("零仟")
+                || MoneyStr.Contains("零万") || MoneyStr.Contains("零亿") || MoneyStr.Contains("零零") || MoneyStr.Contains("零圆")
+                || MoneyStr.Contains("亿万") || MoneyStr.Contains("零整") || MoneyStr.Contains("分整") || MoneyStr.Contains("厘整") || MoneyStr.Contains("毫整"))
+            {
+
+                MoneyStr = MoneyStr.Replace("零毫", "零");
+                MoneyStr = MoneyStr.Replace("零厘", "零");
+
+
+                MoneyStr = MoneyStr.Replace("零分", "零");
+                MoneyStr = MoneyStr.Replace("零角", "零");
+                MoneyStr = MoneyStr.Replace("零拾", "零");
+                MoneyStr = MoneyStr.Replace("零佰", "零");
+                MoneyStr = MoneyStr.Replace("零仟", "零");
+                MoneyStr = MoneyStr.Replace("零万", "万");
+                MoneyStr = MoneyStr.Replace("零亿", "亿");
+                MoneyStr = MoneyStr.Replace("亿万", "亿");
+                MoneyStr = MoneyStr.Replace("零零", "零");
+                MoneyStr = MoneyStr.Replace("零圆", "圆零");
+                MoneyStr = MoneyStr.Replace("零整", "整");
+                MoneyStr = MoneyStr.Replace("角整", "角");
+                MoneyStr = MoneyStr.Replace("分整", "分");
+                MoneyStr = MoneyStr.Replace("厘整", "厘");
+                MoneyStr = MoneyStr.Replace("毫整", "毫");
+                MoneyStr = MoneyStr.Replace("圆零", "圆");
+
+
+
+
+
+            }
+            if (MoneyStr == "整" || MoneyStr == "")
+            {
+                MoneyStr = "零圆整";
+            }
+            if (minus) MoneyStr = "负" + MoneyStr;
+            if (Regex.IsMatch(MoneyStr, @"圆零[壹贰叁肆伍陆柒捌玖]角"))
+            {
+                MoneyStr = MoneyStr.Replace("圆零", "圆");
+            }
+
+            return MoneyStr;
+        }
+        #endregion
     }
+
 
 }
