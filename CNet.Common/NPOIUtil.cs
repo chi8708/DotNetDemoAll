@@ -1,4 +1,5 @@
-﻿using NPOI.HSSF.Util;
+﻿using NPOI.HSSF.UserModel;
+using NPOI.HSSF.Util;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System;
@@ -125,6 +126,164 @@ namespace CNet.Common
 
             }
         }
+
+
+
+        /// <summary>
+        /// 导出数据到excel 支持xls xlsx
+        /// </summary>
+        /// <param name="dt"></param>
+        /// <param name="headers"></param>
+        /// <param name="isXlsx"></param>
+        /// <returns></returns>
+        public static MemoryStream ExportToExcel(DataTable dt, List<ExcelModelHeader> headers, bool isXlsx = false)
+        {
+
+            IWorkbook workbook;
+            if (isXlsx)
+                workbook = new XSSFWorkbook(); // .xlsx
+            else
+                workbook = new HSSFWorkbook(); // .xls
+
+            ISheet sheet = workbook.CreateSheet("Sheet1");
+
+            // 写入表头
+            IRow headerRow = sheet.CreateRow(0);
+            for (int i = 0; i < dt.Columns.Count; i++)
+            {
+                headerRow.CreateCell(i).SetCellValue(headers.First(p => p.ColName == dt.Columns[i].ColumnName).Value);
+            }
+
+
+            // 写入数据
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                IRow row = sheet.CreateRow(i + 1);
+                for (int j = 0; j < dt.Columns.Count; j++)
+                {
+                    row.CreateCell(j).SetCellValue(dt.Rows[i][j].ToString());
+                }
+            }
+
+            // 返回文件
+            MemoryStream ms = new MemoryStream();
+            workbook.Write(ms);
+            ms.Flush();
+            ms.Position = 0; // 重置流位置
+            return ms;
+            //Response.Clear();
+            //Response.ContentType = isXlsx
+            //    ? "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            //    : "application/vnd.ms-excel";
+            //Response.AddHeader("content-disposition", string.Format("attachment; filename=Export.{0}", isXlsx ? "xlsx" : "xls"));
+            //Response.BinaryWrite(ms.ToArray());
+            //Response.End();
+        }
+
+
+        #region xls导入
+
+        /// <summary>
+        /// 读取excel,将数据Excel数据源转化为datatable类型  
+        /// 默认第一行为标头  
+        /// </summary>  
+        /// <param name="strFileName">excel文档路径</param>  
+        /// <returns></returns>  
+        public static DataTable Import(string strFileName, string FileType)
+        {
+            IWorkbook hssfworkbook;
+            DataTable dt = new DataTable();
+            //HSSFWorkbook hssfworkbook;
+            using (FileStream file = new FileStream(strFileName, FileMode.Open, FileAccess.Read))//数据读取
+            {
+                ////XSSFWorkbook 适用XLSX格式，HSSFWorkbook 适用XLS格式
+                //不同格式excle判断
+                hssfworkbook = new HSSFWorkbook(file);
+                //if (FileType == "xls")
+                //{
+                //    hssfworkbook = new HSSFWorkbook(file);
+                //}
+                //else
+                //{
+                //    //hssfworkbook = new XSSFWorkbook(file);
+                //}
+            }
+            ISheet sheet = hssfworkbook.GetSheetAt(0);
+            System.Collections.IEnumerator rows = sheet.GetRowEnumerator();
+
+            IRow headerRow = sheet.GetRow(0);
+            int cellCount = headerRow.LastCellNum;
+
+            for (int j = 0; j < cellCount; j++)
+            {
+                ICell cell = headerRow.GetCell(j);
+                dt.Columns.Add(cell.ToString());
+            }
+
+            for (int i = (sheet.FirstRowNum + 1); i <= sheet.LastRowNum; i++)
+            {
+                IRow row = sheet.GetRow(i);
+                DataRow dataRow = dt.NewRow();
+
+                for (int j = row.FirstCellNum; j < cellCount; j++)
+                {
+                    if (row.GetCell(j) != null)
+                        dataRow[j] = row.GetCell(j).ToString();
+                }
+
+                dt.Rows.Add(dataRow);
+            }
+            return dt;
+        }
+
+        /// <summary>
+        /// 将stream数据源转化为datatable类型  
+        /// 默认第一行为标头  
+        /// </summary>  
+        /// <param name="strFileName"></param>  
+        /// <returns></returns>  
+        public static DataTable ImportStream(Stream stream)
+        {
+            IWorkbook hssfworkbook;
+            DataTable dt = new DataTable();
+            using (Stream file = stream)
+            {
+                hssfworkbook = new HSSFWorkbook(file);
+            }
+            ISheet sheet = hssfworkbook.GetSheetAt(0);
+            System.Collections.IEnumerator rows = sheet.GetRowEnumerator();
+
+            IRow headerRow = sheet.GetRow(0);
+            int cellCount = headerRow.LastCellNum;
+
+            for (int j = 0; j < cellCount; j++)
+            {
+                ICell cell = headerRow.GetCell(j);
+                dt.Columns.Add(cell.ToString());
+            }
+            for (int i = (sheet.FirstRowNum + 1); i <= sheet.LastRowNum; i++)
+            {
+                IRow row = sheet.GetRow(i);
+                DataRow dataRow = dt.NewRow();
+                var cell = row.GetCell(row.FirstCellNum).ToString();
+                if (cell != "") //过滤空行
+                {
+                    for (int j = row.FirstCellNum; j < cellCount; j++)
+                    {
+
+                        if (row.GetCell(j) != null)
+                        {
+                            dataRow[j] = row.GetCell(j).ToString();
+                        }
+                    }
+                    dt.Rows.Add(dataRow);
+                }
+            }
+            return dt;
+        }
+        #endregion
+
+
     }
 
     public class ExcelModel 
@@ -151,6 +310,8 @@ namespace CNet.Common
         public string Value { get; set; }
 
     }
+
+
 
 
 }
